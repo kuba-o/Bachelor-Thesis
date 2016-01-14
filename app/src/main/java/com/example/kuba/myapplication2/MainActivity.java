@@ -3,13 +3,11 @@ package com.example.kuba.myapplication2;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
 import com.example.kuba.myapplication2.Services.ToastCreator;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,12 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         View view = View.inflate(getApplicationContext(), R.layout.activity_main, null);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        turnOn();
+        turnOnBluetoothAdapter();
         disableButton(R.id.activate);
         disableButton(R.id.deactivate);
         disableButton(R.id.disconnect);
-        String deviceName = getString(R.string.device_name);
-        toastCreator.createToast(getApplicationContext(), deviceName);
+        deviceName = getString(R.string.device_name);
     }
 
     public void disableButton(int id){
@@ -49,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         btn = (Button) findViewById(id);
         btn.setEnabled(true);
     }
-    public void turnOn() {
+    public void turnOnBluetoothAdapter() {
         if (!bluetoothAdapter.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnOn, 0);
@@ -58,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void turnOff(View view) throws IOException {
+        bluetoothAdapter.disable();
         outputStream.close();
         bluetoothSocket.close();
-        bluetoothAdapter.disable();
         toastCreator.createToast(getApplicationContext(), "Turned off");
         disableButton(R.id.disconnect);
         disableButton(R.id.activate);
@@ -69,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connecting(View view) throws IOException {
-//        Context context = getApplicationContext();
-        turnOn();
+        turnOnBluetoothAdapter();
         try {
             findBluetooth();
             openBluetooth();
@@ -78,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             enableButton(R.id.disconnect);
             enableButton(R.id.connect);
         }
-        catch (IOException e){
+        catch (IOException e) {
             return;
         }
     }
@@ -93,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
             }
+            toastCreator.createToast(getApplicationContext(), "No device detected");
         }
     }
 
@@ -104,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
             outputStream = bluetoothSocket.getOutputStream();
             toastCreator.createToast(getApplicationContext(), "Bluetooth Connection Created");
         }
-        else
-            toastCreator.createToast(getApplicationContext(), "No device detected");
     }
 
     public void deactivateLock(View view) throws IOException {
