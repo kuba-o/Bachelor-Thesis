@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Thesis</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connecting">Connecting</string>
+    <string name="activate">Activate</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="device_name">HC-06</string>
+</resources>
