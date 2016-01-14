@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/connect"
-        android:id="@+id/button"
+        android:id="@+id/connect"
         android:onClick="connecting"
         android:layout_gravity="center_horizontal" />
 
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/activate"
-        android:id="@+id/button3"
+        android:id="@+id/activate"
         android:onClick="activateLock"
         android:layout_gravity="center_horizontal" />
 
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/deactivate"
-        android:id="@+id/button2"
+        android:id="@+id/deactivate"
         android:onClick="deactivateLock"
 
         android:layout_gravity="center_horizontal" />
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/disconnect"
-        android:id="@+id/button4"
+        android:id="@+id/disconnect"
         android:onClick="turnOff"
         android:layout_gravity="center_horizontal" />
 

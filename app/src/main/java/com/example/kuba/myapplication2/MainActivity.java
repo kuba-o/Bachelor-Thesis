@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
 import com.example.kuba.myapplication2.Services.ToastCreator;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,18 +23,32 @@ public class MainActivity extends AppCompatActivity {
     public BluetoothDevice myDevice = null;
     BluetoothSocket bluetoothSocket;
     OutputStream outputStream;
-    String deviceName = "HC-06";
+    String deviceName;
+    Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Context context = getApplicationContext();
-        View view = View.inflate(context, R.layout.activity_main, null);
+        View view = View.inflate(getApplicationContext(), R.layout.activity_main, null);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         turnOn();
+        disableButton(R.id.activate);
+        disableButton(R.id.deactivate);
+        disableButton(R.id.disconnect);
+        String deviceName = getString(R.string.device_name);
+        toastCreator.createToast(getApplicationContext(), deviceName);
     }
 
+    public void disableButton(int id){
+        btn = (Button) findViewById(id);
+        btn.setEnabled(false);
+    }
+
+    public void enableButton(int id){
+        btn = (Button) findViewById(id);
+        btn.setEnabled(true);
+    }
     public void turnOn() {
         if (!bluetoothAdapter.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -46,21 +62,28 @@ public class MainActivity extends AppCompatActivity {
         bluetoothSocket.close();
         bluetoothAdapter.disable();
         toastCreator.createToast(getApplicationContext(), "Turned off");
+        disableButton(R.id.disconnect);
+        disableButton(R.id.activate);
+        disableButton(R.id.deactivate);
+        enableButton(R.id.connect);
     }
 
     public void connecting(View view) throws IOException {
-        Context context = getApplicationContext();
+//        Context context = getApplicationContext();
         turnOn();
-        findBT();
         try {
-            openBT();
+            findBluetooth();
+            openBluetooth();
+            disableButton(R.id.connect);
+            enableButton(R.id.disconnect);
+            enableButton(R.id.connect);
         }
         catch (IOException e){
             return;
         }
     }
 
-    void findBT() throws IOException {
+    void findBluetooth() throws IOException {
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
         if (devices != null) {
             for (BluetoothDevice device : devices) {
@@ -73,21 +96,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void openBT() throws IOException {
-        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");       //Standard SerialPortService ID
-        bluetoothSocket = myDevice.createRfcommSocketToServiceRecord(uuid);
-        bluetoothSocket.connect();
-        outputStream = bluetoothSocket.getOutputStream();
-        toastCreator.createToast(getApplicationContext(), "Bluetooth Connection Created");
+    void openBluetooth() throws IOException {
+        if (myDevice != null) {
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");       //Standard SerialPortService ID
+            bluetoothSocket = myDevice.createRfcommSocketToServiceRecord(uuid);
+            bluetoothSocket.connect();
+            outputStream = bluetoothSocket.getOutputStream();
+            toastCreator.createToast(getApplicationContext(), "Bluetooth Connection Created");
+        }
+        else
+            toastCreator.createToast(getApplicationContext(), "No device detected");
     }
 
     public void deactivateLock(View view) throws IOException {
         outputStream.write("2".getBytes());
         toastCreator.createToast(getApplicationContext(), "Deactivated");
+        enableButton(R.id.activate);
+        disableButton(R.id.deactivate);
     }
 
     public void activateLock(View view) throws IOException {
         outputStream.write("1".getBytes());
         toastCreator.createToast(getApplicationContext(), "Activated");
+        enableButton(R.id.deactivate);
+        disableButton(R.id.activate);
     }
 }
