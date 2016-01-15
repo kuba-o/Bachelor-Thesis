@@ -72,24 +72,20 @@ public class MainActivity extends AppCompatActivity {
             openBluetooth();
             disableButton(R.id.connect);
             enableButton(R.id.disconnect);
-            enableButton(R.id.connect);
+            enableButton(R.id.activate);
         }
         catch (IOException e) {
-            return;
         }
     }
 
     void findBluetooth() throws IOException {
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-        if (devices != null) {
-            for (BluetoothDevice device : devices) {
-                if (deviceName.equals(device.getName())) {
-                    myDevice = device;
-                    toastCreator.createToast(getApplicationContext(), "Paired Bluetooth Device Found");
-                    break;
-                }
+        for (BluetoothDevice device : devices) {
+            if (deviceName.equals(device.getName())) {
+                myDevice = device;
+                toastCreator.createToast(getApplicationContext(), "Paired Bluetooth Device Found");
+                break;
             }
-            toastCreator.createToast(getApplicationContext(), "No device detected");
         }
     }
 
@@ -100,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSocket.connect();
             outputStream = bluetoothSocket.getOutputStream();
             toastCreator.createToast(getApplicationContext(), "Bluetooth Connection Created");
+        }
+        else {
+            toastCreator.createToast(getApplicationContext(), "No device detected");
         }
     }
 
