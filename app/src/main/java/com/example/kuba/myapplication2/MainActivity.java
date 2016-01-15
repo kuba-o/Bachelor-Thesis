@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
             enableButton(R.id.disconnect);
             enableButton(R.id.activate);
         }
-        catch (IOException e) {
-        }
+        catch (IOException e) { }
     }
 
     void findBluetooth() throws IOException {
@@ -96,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSocket.connect();
             outputStream = bluetoothSocket.getOutputStream();
             toastCreator.createToast(getApplicationContext(), "Bluetooth Connection Created");
-        }
-        else {
-            toastCreator.createToast(getApplicationContext(), "No device detected");
         }
     }
 
